@@ -36,10 +36,13 @@ abstract class BaseLabel
     const TYPE_QR = 1;
     const TYPE_BARCODE = 2;
     const TYPE_C39 = 3; //Code 128 Barcode
+    const TYPE_DATAMATRIX = 4;
+    const TYPE_PDF417 = 5;
     //const TYPE_INFO = 3;
 
     const SIZE_50X30 = '50x30';
     const SIZE_62X30 = '62x30';
+    const SIZE_89X36 = '89x36';
     const SIZE_CUSTOM = 'custom';
 
     const PRESET_CUSTOM = 'custom';
@@ -183,9 +186,8 @@ abstract class BaseLabel
             }
         }
 
-        if ($this->type == static::TYPE_BARCODE ||
-            $this->type == static::TYPE_C39) {
-            //Create barcode config.
+        switch ($this->type) {
+        case static::TYPE_BARCODE:
             $style = array(
                 'position' => $barcode_position,
                 'align' => 'C',
@@ -200,22 +202,38 @@ abstract class BaseLabel
                 'text' => true,
                 'font' => 'helvetica',
                 'fontsize' => 8 );
+            break;
+        case static::TYPE_PDF417:
+        case static::TYPE_QR:
+            $style = array(
+                'position' => $barcode_position,
+                'stretch' => false,
+                'border' => false,
+                'hpadding' => 'auto',
+                'vpadding' => 'auto',
+                'fgcolor' => array(0,0,0),
+                'bgcolor' => false);
+            break;
 
-            switch ($this->type) {
-                case static::TYPE_BARCODE:
-                    $type = 'EAN8';
-                    $width = '';
-                    break;
-                case static::TYPE_C39:
-                    $type = 'C39';
-                    $width = '36';
-                    break;
-                default:
-                    $width = '';
-                    throw new \InvalidArgumentException(sprintf(_('Der Barcodetyp %s wird nicht unterstützt!'), $this->type));
-            }
+        }
 
+        switch ($this->type) {
+        case static::TYPE_BARCODE:
+            $type = 'EAN8';
+            $width = '';
             $this->pdf->write1DBarcode($this->element->getBarcodeContent($type), $type, '', '', $width, 15, '', $style, 'N');
+            break;
+        case static:: TYPE_PDF417:
+            $type = 'PDF417';
+            $this->pdf->write2DBarcode($this->element->getBarcodeContent($type), 'PDF417,1,1', '', 16, '', '', $style, 'N', false);
+            break;
+        case static:: TYPE_QR:
+            $type = 'QR';
+            $this->pdf->write2DBarcode($this->element->getBarcodeContent($type), 'QRCODE,L', '', 16, '', '', $style, 'N', false);
+            break;
+        default:
+            $width = '';
+            throw new \InvalidArgumentException(sprintf(_('Der Barcodetyp %s wird nicht unterstützt!'), $this->type));
         }
 
         //Output the labels

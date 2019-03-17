@@ -223,14 +223,14 @@ class Part extends Base\AttachmentsContainingDBElement implements Interfaces\IAP
     {
         switch ($barcode_type) {
             case 'EAN8':
+            case 'DATAMATRIX':
+            case 'PDF417':
+            case 'QR':
                 $code = (string) $this->getID();
                 while (\strlen($code) < 7) {
                     $code = '0' . $code;
                 }
                 return $code;
-
-            case 'QR':
-                return 'Part-DB; Part: ' . $this->getID();
 
             default:
                 throw new Exception(_('Unbekannter Labeltyp: ').$barcode_type);

@@ -90,7 +90,7 @@ class PartLabel extends BaseLabel
      */
     public static function getSupportedSizes() : array
     {
-        return array(static::SIZE_50X30, static::SIZE_62X30);
+        return array(static::SIZE_50X30, static::SIZE_62X30, static::SIZE_89X36);
     }
 
     /**
@@ -99,6 +99,6 @@ class PartLabel extends BaseLabel
      */
     public static function getSupportedTypes() : array
     {
-        return array(static::TYPE_BARCODE, static::TYPE_TEXT);
+        return array(static::TYPE_BARCODE, static::TYPE_PDF417, static::TYPE_QR, static::TYPE_TEXT);
     }
 }

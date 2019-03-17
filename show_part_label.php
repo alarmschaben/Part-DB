@@ -72,7 +72,7 @@ if (!$json_storage->itemExists($generator_type . '@' . $profile_name)) {
     } elseif ($generator_type == 'location') {
         $profile = array('label_size' => BaseLabel::SIZE_50X30,
             'label_preset' => 'Preset A',
-            'label_type' => BaseLabel::TYPE_C39,
+            'label_type' => BaseLabel::TYPE_BARCODE,
             'text_bold' => false,
             'text_italic' => false,
             'text_underline' => false,
